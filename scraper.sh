@@ -1,13 +1,17 @@
 #!/bin/bash
-#!/bin/bash
 
-# API URL for Bitcoin price in USD
-URL="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+# Define URL
+URL="https://fr.finance.yahoo.com/quote/MC.PA/"
 
-# Fetch the price and extract it using `jq`
-PRICE=$(curl -s "$URL" | jq '.bitcoin.usd')
+# Fetch HTML content
+HTML=$(curl -s "$URL")
 
-# Display the result
-echo "Bitcoin Price: $PRICE USD" >> prices.log
+# Extract LVMH stock price using regex
+PRICE=$(echo "$HTML" | grep -oP '(?<="regularMarketPrice":{"raw":)[0-9]+\.[0-9]+')
 
+# Get current timestamp
+TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+
+# Save to CSV file
+echo "$TIMESTAMP, $PRICE" >> lvmh_prices.csv
 
